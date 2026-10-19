@@ -1,0 +1,43 @@
+rules_version = '2';
+// Quy tắc bảo mật Cloud Firestore - Nha Khoa Tiến Mạnh
+// Chỉ tài khoản đã được cấp quyền (có hồ sơ trong collection users, không bị khóa) mới đọc/ghi được dữ liệu.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function userDoc() { return /databases/$(database)/documents/users/$(request.auth.uid); }
+    function isMember() { return signedIn() && exists(userDoc()) && get(userDoc()).data.active != false; }
+    function isAdmin() { return isMember() && get(userDoc()).data.role == 'admin'; }
+    function clinicNotSetUp() { return !exists(/databases/$(database)/documents/meta/setup); }
+
+    // Tài khoản người dùng: chỉ quản trị viên quản lý.
+    // Ngoại lệ duy nhất: người đăng nhập ĐẦU TIÊN khi phòng khám chưa khởi tạo được tự tạo hồ sơ quản trị viên.
+    match /users/{uid} {
+      allow read: if isMember() || (signedIn() && request.auth.uid == uid);
+      allow create: if isAdmin() || (signedIn() && request.auth.uid == uid && clinicNotSetUp());
+      allow update: if isAdmin()
+        || (isMember() && request.auth.uid == uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['mustChangePassword']));
+      allow delete: if isAdmin();
+    }
+
+    match /meta/{docId} {
+      allow read: if signedIn();
+      allow create, update: if isAdmin() || (docId == 'counters' && isMember());
+      allow delete: if false;
+    }
+
+    match /branches/{id} {
+      allow read: if isMember();
+      allow write: if isAdmin();
+    }
+
+    match /logs/{id} {
+      allow read, create: if isMember();
+      allow update, delete: if false;
+    }
+
+    // Toàn bộ dữ liệu nghiệp vụ còn lại
+    match /{col}/{id} {
+      allow read, write: if isMember() && !(col in ['users', 'meta', 'branches', 'logs']);
+    }
+  }
+}

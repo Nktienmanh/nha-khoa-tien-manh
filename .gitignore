@@ -1,0 +1,7 @@
+# Dữ liệu bệnh nhân - KHÔNG đưa lên GitHub
+data/
+*.log
+node_modules/
+.firebase/
+firebase-debug.log
+firestore-debug.log

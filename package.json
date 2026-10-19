@@ -1,0 +1,13 @@
+{
+  "name": "nha-khoa-tien-manh",
+  "version": "1.0.0",
+  "description": "Phần mềm quản lý phòng khám Nha Khoa Tiến Mạnh",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "deploy": "firebase deploy --only hosting,firestore"
+  },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED"
+}
