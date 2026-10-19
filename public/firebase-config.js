@@ -7,10 +7,10 @@
  * Xem hướng dẫn chi tiết trong file HUONG-DAN-FIREBASE.md
  */
 window.FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyAFsgwPb5Guxz0ve3Xe9dKkVGJ9fVzLG4I",
+  authDomain: "nha-khoa-tien-manh.firebaseapp.com",
+  projectId: "nha-khoa-tien-manh",
+  storageBucket: "nha-khoa-tien-manh.firebasestorage.app",
+  messagingSenderId: "477475224528",
+  appId: "1:477475224528:web:ea3ff81bba2cf0ac6ad7d5"
 };
